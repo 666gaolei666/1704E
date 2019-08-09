@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 命名空间 早期版本是可选的 现在是必须的 可以是随意的名称 但是最好是全限定名称 -->
+<!-- 命名空间使用的是对应的接口的全限定名称 -->
+<mapper namespace="com.bw.gaolei.mapper.ZhiMapper">
+	<!-- 关联 -->
+	<resultMap type="Zhi" id="rm">
+		<id column="zid" property="zid"/>
+		<result column="zname" property="zname"/>
+		<result column="zmiao" property="zmiao"/>
+		<association property="lei" javaType="Lei" column="lid">
+			<id column="lid" property="lid"/>
+			<result column="lname" property="lname"/>
+		</association>
+	</resultMap>
+	<!-- 列表展示 -->
+	<select id="listzhi" parameterType="ZhiVo" resultType="Zhi" resultMap="rm">
+		select z.*,l.lname from zhi z join lei l on z.lid=l.lid
+		<where>
+			<if test="name != null and name != '' ">
+				and zname like "%${name}%"
+			</if>
+		</where>
+	</select>
+	<!-- 下拉框 -->
+	<select id="listlei" parameterType="string" resultType="Lei">
+		select * from lei
+	</select>
+	<!-- 添加 -->
+	<insert id="add" parameterType="Zhi">
+		insert into zhi (zname,zmiao,lid) values (#{zname},#{zmiao},#{lei.lid})
+	</insert>
+	<!-- 回显 -->
+	<select id="listzhiid" parameterType="int" resultMap="rm" resultType="Zhi">
+		select z.*,l.lname from zhi z join lei l on z.lid=l.lid where z.zid=#{zid}
+<!-- 		select * from zhi where zid =#{zid} -->
+	</select>
+	<!-- 修改 -->
+	<update id="update" parameterType="Zhi">
+		update zhi set zname=#{zname},zmiao=#{zmiao},lid=#{lei.lid} where zid=#{zid}
+	</update>
+	<!-- 批量删除 -->
+	<delete id="pldel" parameterType="ZhiVo">
+		delete from zhi
+		<where>
+			<if test="ids != null ">
+				<foreach collection="ids" item="zid" open="zid in (" close=")" separator=",">
+					#{zid}
+				</foreach>
+			</if>
+		</where>
+	</delete>
+	 <!-- 删除 -->
+	<delete id="del" parameterType="int">
+		delete from zhi where zid=#{zid}
+	</delete>
+</mapper>
