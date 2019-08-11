@@ -1,0 +1,4 @@
+com\bw\gaolei\bean\NewsLink.class
+com\bw\gaolei\mapper\NewsLinkMapper.class
+com\bw\gaolei\util\DateUtil.class
+com\bw\gaolei\util\CommonUtil.class
